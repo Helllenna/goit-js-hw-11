@@ -25,7 +25,7 @@ let page;
 const API_KEY = "35107716-da32e5ff358c128d5e6c68865";
 const URL = "https://pixabay.com/api/";
 
-export async function request(searchQuery) {
+async function request(searchQuery) {
   page = startpage;
   const urlOptions = "image_type=photo&orientation=horizontal&safesearch=true";
   const url = `${URL}?key=${API_KEY}&q=${searchQuery}&${urlOptions}&page=${page}&per_page=${per_page}`;
@@ -37,6 +37,49 @@ async function handleSearchImage(event) {
   event.preventDefault();
   searchQuery = event.currentTarget.elements.searchQuery.value.trim();
   search();
+}
+
+async function handleLoadMoreClickBtn() {
+  startpage += 1;
+    return await request(searchQuery).then(({ data }) => {
+    createGallery(data);
+    galleryEl.insertAdjacentHTML('beforeend', images);
+    lightbox.refresh();
+    smoothScroll();
+      if(data.totalHits < per_page * page) {
+        loadMoreBtn.classList.add("is-hidden");
+        Notify.failure(
+          "Sorry, there are no images matching your search query. Please try again."
+        );
+      }
+    });
+}
+
+function createGallery(data) {
+  return (images = data.hits
+    .map((image) => {
+      return `<div class="photo-card">
+            <a class="gallery__item" href="${image.largeImageURL}">
+            <img class="gallery__image" src="${image.largeImageURL}" alt="${image.tags}" loading="lazy" width=300 height=200/>
+          </a>
+            <div class="info">
+            <p class="info-item">
+              <b>Likes</b>${image.likes}
+            </p>
+            <p class="info-item">
+              <b>Views</b>${image.views}
+            </p>
+            <p class="info-item">
+              <b>Comments</b>${image.comments}
+            </p>
+            <p class="info-item">
+              <b>Downloads</b>${image.downloads}
+            </p>
+          </div>
+        </div>
+          `;
+    })
+    .join(""));
 }
 
 function search() {
@@ -67,47 +110,4 @@ function search() {
   }
 });
 }
-}
-
-  async function handleLoadMoreClickBtn() {
-  startpage += 1;
-    return await request(searchQuery).then(({ data }) => {
-    createGallery(data);
-    galleryEl.insertAdjacentHTML('beforeend', images);
-    lightbox.refresh();
-    smoothScroll();
-      if(data.totalHits < per_page * page) {
-        loadMoreBtn.classList.add("is-hidden");
-        Notify.failure(
-          "Sorry, there are no images matching your search query. Please try again."
-        );
-      }
-    });
-}
-
-function createGallery(data) {
-  return (images = data.hits
-    .map((image) => {
-      return `<div class="photo-card">
-            <a class="gallery__item" href="${image.largeImageURL}">
-            <img class="gallery__image" src="${image.largeImageURL}" alt="${image.tags}" loading="lazy" width=300/>
-          </a>
-            <div class="info">
-            <p class="info-item">
-              <b>Likes</b>${image.likes}
-            </p>
-            <p class="info-item">
-              <b>Views</b>${image.views}
-            </p>
-            <p class="info-item">
-              <b>Comments</b>${image.comments}
-            </p>
-            <p class="info-item">
-              <b>Downloads</b>${image.downloads}
-            </p>
-          </div>
-        </div>
-          `;
-    })
-    .join(""));
 }
