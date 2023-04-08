@@ -1,0 +1,34 @@
+.gallery {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  .info {
+    display: flex;
+    justify-content: space-around;
+    align-content: center;
+  }
+  
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .search-form {
+    text-align: center;
+  }
+  
+  .load-more {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .is-hidden {
+    display: none;
+  }
