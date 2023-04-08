@@ -20,15 +20,12 @@ const per_page = 40;
 let searchQuery = "";
 let startpage = 1;
 let images = '';
-let page;
-
 const API_KEY = "35107716-da32e5ff358c128d5e6c68865";
 const URL = "https://pixabay.com/api/";
 
 async function request(searchQuery) {
-  page = startpage;
   const urlOptions = "image_type=photo&orientation=horizontal&safesearch=true";
-  const url = `${URL}?key=${API_KEY}&q=${searchQuery}&${urlOptions}&page=${page}&per_page=${per_page}`;
+  const url = `${URL}?key=${API_KEY}&q=${searchQuery}&${urlOptions}&page=${startpage}&per_page=${per_page}`;
   const answer = await axios.get(url);
   return answer;
 }
@@ -45,7 +42,6 @@ async function handleLoadMoreClickBtn() {
     createGallery(data);
     galleryEl.insertAdjacentHTML('beforeend', images);
     lightbox.refresh();
-    smoothScroll();
       if(data.totalHits < per_page * page) {
         loadMoreBtn.classList.add("is-hidden");
         Notify.failure(
